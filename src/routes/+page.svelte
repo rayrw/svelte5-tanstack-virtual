@@ -10,21 +10,11 @@
 	let virtualizer = $derived(
 		createVirtualizer<HTMLElement, HTMLTableRowElement>({
 			count: numbers.length,
-			getScrollElement: () => virtualListElement,
+			getScrollElement: virtualListElement ? () => virtualListElement : () => null,
 			estimateSize: () => 24
 		})
 	);
 	let virtualListItems = $derived($virtualizer.getVirtualItems());
-
-	///////////// It doesn't work without this hack ////////////
-	let mounted = $state(false);
-	$effect(() => {
-		if (!mounted && virtualListElement !== null) {
-			mounted = true;
-			$virtualizer._willUpdate();
-		}
-	});
-	////////////////////////////////////////////////////////////
 
 	// Ref: https://github.com/TanStack/virtual/issues/640#issuecomment-1885029911
 	// Ref: https://github.com/TanStack/virtual/discussions/476#discussioncomment-4724139
